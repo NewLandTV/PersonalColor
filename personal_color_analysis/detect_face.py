@@ -14,11 +14,11 @@ class DetectFace:
         self.predictor = dlib.shape_predictor(predictor_path)
 
         # face detection part
-        self.img = cv2.imread(image)
+        self.img = image
         if self.img is None:
             raise ValueError(f"Image not found or cannot be loaded at {image}")
-        # if self.img.shape[0] > 500:
-        #     self.img = cv2.resize(self.img, dsize=(0, 0), fx=0.8, fy=0.8)
+        if self.img.shape[0] > 500:
+            self.img = cv2.resize(self.img, dsize=(0, 0), fx=0.8, fy=0.8)
 
         # init face parts
         self.right_eyebrow = []

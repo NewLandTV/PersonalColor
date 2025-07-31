@@ -18,9 +18,9 @@ def personal_diagnosis():
 
     # 2. Base64 인코딩된 이미지 데이터 디코딩
     try:
-        # Base64 데이터 앞에 'data:image/jpeg;base64,' 등 메타데이터가 붙어있을 수 있으므로 제거
+        # Base64 데이터 앞에 "data:image/jpeg;base64," 등 메타데이터가 붙어있을 수 있으므로 제거
         image_data_b64 = data["image"]
-        if ',' in image_data_b64:
+        if "," in image_data_b64:
             image_data_b64 = image_data_b64.split(",")[1]
         
         image_bytes = base64.b64decode(image_data_b64)
@@ -38,13 +38,14 @@ def personal_diagnosis():
 
     # 3. 이미지 분석 및 진단 (메모리 내에서 처리)
     try:
-        diagnosis_result_dict = personal_color.analysis(img)
+        diagnosis_result = personal_color.analysis(img)
         
-        # "analysis" 함수에서 오류를 명확히 처리하도록 개선
-        if diagnosis_result_dict.get("status") == "failure":
-            return jsonify(diagnosis_result_dict), 400
-        
-        return jsonify(diagnosis_result_dict), 200
+        return jsonify({
+            "status": "success",
+            "diagnosis": diagnosis_result,
+            "confidence": 0.9,
+            "recommendations": []
+        }), 200
 
     except Exception as e:
         print(f"서버 내부 오류 발생: {e}")
@@ -57,4 +58,4 @@ def personal_diagnosis():
         }), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)
