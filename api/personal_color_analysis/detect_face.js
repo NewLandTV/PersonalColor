@@ -3,6 +3,7 @@ require("@tensorflow/tfjs-backend-wasm"); // tfjs-node 대신 WASM 백엔드를 
 const faceapi = require("face-api.js");
 const { createCanvas, Image, ImageData, Canvas, loadImage, DOMImage } = require("canvas");
 const path = require("path");
+const fs = require("fs");
 
 // Vercel 환경에서 WASM 백엔드 초기화
 (async () => {
@@ -22,7 +23,7 @@ faceapi.env.monkeyPatch({
     Image: DOMImage || Image,
     ImageData,
     createCanvas,
-    createImage: () => new Image()
+    createImage: (width, height) => new Image(new Uint8ClampedArray(width * height * 4), width, height)
 });
 
 // 이 Promise가 모델 로딩의 완료를 보장합니다.
