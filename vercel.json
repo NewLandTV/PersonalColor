@@ -1,23 +1,21 @@
 {
     "version": 2,
-    "builds": [
-        {
-            "src": "api/personal-diagnosis.js",
-            "use": "@vercel/node",
-            "config": {
-                "includeFiles": [
-                    "node_modules/face-api.js/**",
-                    "node_modules/canvas/**",
-                    "node_modules/@tensorflow/tfjs-node/**"
-                ]
-            }
+    "functions": {
+        "api/**/*.js": {
+            "runtime": "@vercel/node",
+            "memory": 1024,
+            "maxDuration": 60,
+            "includeFiles": [
+                "node_modules/face-api.js/**",
+                "node_modules/canvas/**",
+                "node_modules/@tensorflow/tfjs-backend-wasm/dist/*.wasm",
+                "node_modules/@tensorflow/tfjs-core/**"
+            ]
         }
-    ],
-        "rewrites": [
-        {
-            "source": "/api/(.*)",
-            "destination": "/api/personal-diagnosis.js"
+    },
+    "builds": {
+        "env": {
+            "NODE_PATH": "node_modules"
         }
-    ],
-    "installCommand": "npm install"
+    }
 }
