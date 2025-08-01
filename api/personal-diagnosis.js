@@ -34,7 +34,21 @@ async function processImage(imageDataB64) {
         };
         
         // Gemini에게 요청할 프롬프트
-        const prompt = `Analyze the person's face in the image to determine their personal color. Return the analysis as a JSON object with the following keys: status (string), diagnosis (object), confidence (number), and message (string). The 'diagnosis' object should contain 'undertone', 'season', 'recommendations' (an array of strings), and 'summary' (a brief explanation). Return the response in Korean. Do not include any text before or after the JSON object.`;
+        const prompt = `사진 속 인물의 얼굴을 분석하여 퍼스널 컬러를 진단해주세요.
+- 만약 사진에 인물의 얼굴이 있으면, 다음 JSON 형식으로 응답하세요:
+{
+    "status": "success",
+    "diagnosis": "계절(예: 봄, 여름, 가을, 겨울) 그리고 (웜 또는 쿨)"
+    "confidence": "분석 정확도 (백분율)",
+    "recommendations": ["(추천 항목)", "(추천 항목)", "(추천 항목)"],
+    "message": "분석 완료"
+}
+- 만약 사진에 인물의 얼굴이 없으면, 다음 JSON 형식으로 응답하세요:
+{
+    "status": "error",
+    "message": "사진에서 얼굴을 찾을 수 없습니다."
+}
+반드시 JSON 객체만 반환하고, 다른 텍스트는 포함하지 마세요.`;
 
         const result = await model.generateContent([prompt, imagePart]);
         const response = await result.response;
