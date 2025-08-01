@@ -3,7 +3,7 @@ const { loadImage } = require("canvas");
 const path = require("path");
 
 // 모델 파일 경로
-const MODEL_URL = path.join(__dirname, "shape_predictor_68_face_landmarks.dat");
+const MODEL_URL = path.join(__dirname, "models", "shape_predictor_68_face_landmarks.dat");
 
 // 모델 로딩 (최초 한 번만 호출)
 async function loadModels() {
