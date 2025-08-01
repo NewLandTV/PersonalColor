@@ -5,7 +5,12 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function processImage(imageDataB64) {    
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const model = genAI.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            generationConfig: {
+                maxOutputTokens: 200,
+            }
+        });
 
         if (!imageDataB64 || typeof imageDataB64 !== "string") {
             throw new Error("Invalid image data format.");
@@ -29,7 +34,14 @@ async function processImage(imageDataB64) {
         };
         
         // Gemini에게 요청할 프롬프트
-        const prompt = "Analyze the skin tone and undertone from the person's face in this image. Is the person warm tone or cool tone? Explain why.";
+        const prompt = `Analyze the person's face in the image to determine their personal color.
+                        Provide a concise, single-line response for each point below.
+                        1. Skin Tone:
+                        2. Undertone (Warm/Cool):
+                        3. Season (e.g., Spring, Summer, Autumn, Winter):
+                        4. Recommended Color Palette:
+                        5. Accuracy of this analysis (as a percentage): 
+                        6. Brief explanation for the analysis:`;
 
         const result = await model.generateContent([prompt, imagePart]);
         const response = await result.response;
