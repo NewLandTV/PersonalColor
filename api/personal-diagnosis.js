@@ -34,22 +34,19 @@ async function processImage(imageDataB64) {
         };
         
         // Gemini에게 요청할 프롬프트
-        const prompt = `Analyze the person's face in the image to determine their personal color. Provide a concise, single-line response for each point below.
-1. 피부 톤:
-2. 언더톤 (웜/쿨):
-3. 계절 (예: 봄, 여름, 가을, 겨울):
-4. 추천 색상 팔레트:
-5. 분석 정확도 (백분율로): 
-6. 분석 요약 (간단하게):`;
+        const prompt = `Analyze the person's face in the image to determine their personal color. Return the analysis as a JSON object with the following keys: status (string), diagnosis (object), confidence (number), and message (string). The 'diagnosis' object should contain 'undertone', 'season', 'recommendations' (an array of strings), and 'summary' (a brief explanation). Return the response in Korean. Do not include any text before or after the JSON object.`;
 
         const result = await model.generateContent([prompt, imagePart]);
         const response = await result.response;
         const text = response.text();
-
-        return {
-            status: "success",
-            diagnosis: text
+        
+        // 응답이 비어있을 경우 에러 처리
+        if (!text) {
+            throw new Error("Gemini API returned an empty response.");
         }
+        
+        // JSON 문자열을 객체로 변환하여 반환
+        return JSON.parse(text);
     } catch (error) {
         console.error("Gemini API Error:", error);
         return {
