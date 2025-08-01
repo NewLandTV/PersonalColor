@@ -12,5 +12,5 @@
             "dest": "app.py"
         }
     ],
-    "installCommand": "sudo apt-get update -y && sudo apt-get install -y cmake g++ libboost-all-dev && pip install --no-cache-dir -r requirements.txt"
+    "installCommand": "apt-get update -y && apt-get install -y cmake g++ libboost-all-dev && pip install --no-cache-dir -r requirements.txt"
 }
