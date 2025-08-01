@@ -6,12 +6,25 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 async function processImage(imageDataB64) {    
     try {
         const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+
+        if (!imageDataB64 || typeof imageDataB64 !== "string") {
+            throw new Error("Invalid image data format.");
+        }
+
+        let base64Data = imageDataB64;
+        let mimeType = "image/jpeg"; // Default
+
+        // 'data:image/jpeg;base64,' 접두사가 있는지 확인하고 처리
+        if (imageDataB64.startsWith("data:")) {
+            const parts = imageDataB64.split(";");
+            mimeType = parts[0].split(":")[1];
+            base64Data = parts[1].split(",")[1];
+        }
         
-        // Base64 이미지를 이미지 파트로 변환
         const imagePart = {
             inlineData: {
-                data: imageDataB64.split(",")[1], // "data:image/jpeg;base64," 제거
-                mimeType: imageDataB64.split(",")[0].split(":")[1].split(";")[0] // mimeType 추출
+                data: base64Data,
+                mimeType: mimeType
             }
         };
         
