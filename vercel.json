@@ -12,7 +12,7 @@
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "app.py"
+            "dest": "/app.py"
         }
     ],
     "installCommand": "apt-get update && apt-get install -y cmake build-essential libboost-all-dev python3.12-distutils && python3.12 -m pip install --upgrade pip && python3.12 -m pip install --no-cache-dir -r requirements.txt"
