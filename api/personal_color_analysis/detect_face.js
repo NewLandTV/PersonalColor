@@ -25,19 +25,30 @@ faceapi.env.monkeyPatch({
     createImage: () => new Image()
 });
 
-// 모델 파일 경로
-const MODELS_DIR = path.join(__dirname, "models");
+// 이 Promise가 모델 로딩의 완료를 보장합니다.
+let modelsLoadedPromise = null;
 
-// 모델 로딩 (최초 한 번만 호출)
-const loadModelsPromise = (async () => {
-    console.log(`Loading face-api.js models from: ${MODELS_DIR}`);
-    await faceapi.nets.ssdMobilenetv1.loadFromDisk(MODELS_DIR);
-    await faceapi.nets.faceLandmark68TinyNet.loadFromDisk(MODELS_DIR);
-    console.log("Face API models loaded successfully.");
-})();
+async function loadModelsAndInitialize() {
+    if (modelsLoadedPromise) {
+        return modelsLoadedPromise;
+    }
+  
+    modelsLoadedPromise = (async () => {
+        // 모델 파일 경로
+        const MODELS_DIR = path.join(__dirname, "models");
+
+        // 모델 로딩 (최초 한 번만 호출)
+        console.log(`Loading face-api.js models from: ${MODELS_DIR}`);
+        await faceapi.nets.ssdMobilenetv1.loadFromDisk(MODELS_DIR);
+        await faceapi.nets.faceLandmark68TinyNet.loadFromDisk(MODELS_DIR);
+        console.log("Face API models loaded successfully.");
+    })();
+    
+    return modelsLoadedPromise;
+}
 
 async function detectFaceAndLandmarks(imageBuffer) {
-    await loadModelsPromise; // 모델 로딩이 완료될 때까지 기다림
+    await loadModelsAndInitialize(); // 모델 로딩이 완료될 때까지 기다림
 
     try {
         const image = await loadImage(imageBuffer);

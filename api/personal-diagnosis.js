@@ -3,13 +3,7 @@ const { detectFaceAndLandmarks } = require("./personal_color_analysis/detect_fac
 const { extractCheekColor } = require("./personal_color_analysis/color_extract");
 const { analyzeTone } = require("./personal_color_analysis/tone_analysis");
 
-async function processImage(imageDataB64) {
-    // 모델 로딩이 완료될 때까지 기다립니다.
-    if (!modelsAreLoaded) {
-        console.log("Waiting for models to load...");
-        await modelsPromise;
-    }
-    
+async function processImage(imageDataB64) {    
     const imageBuffer = Buffer.from(imageDataB64, "base64");
 
     console.log(`Received image buffer of size: ${imageBuffer.length} bytes`);
