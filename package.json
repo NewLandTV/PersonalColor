@@ -1,0 +1,7 @@
+{
+    "name": "personal-color",
+    "version": "1.0.0",
+    "dependencies": {
+        "micro": "^9.4.1"
+    }
+}
