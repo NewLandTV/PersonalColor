@@ -6,9 +6,9 @@
             "use": "@vercel/node",
             "config": {
                 "includeFiles": [
-                    "api/personal_color_analysis/**",
                     "node_modules/face-api.js/**",
-                    "node_modules/canvas/**"
+                    "node_modules/canvas/**",
+                    "node_modules/@tensorflow/tfjs-node/**"
                 ]
             }
         }
