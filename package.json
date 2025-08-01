@@ -2,10 +2,7 @@
     "name": "personal-color",
     "version": "1.0.0",
     "dependencies": {
-        "canvas": "^3.1.2",
-        "face-api.js": "^0.22.2",
-        "@tensorflow/tfjs-core": "^4.22.0",
-        "@tensorflow/tfjs-backend-wasm": "^4.22.0",
+        "@google/generative-ai": "^0.24.1",
         "micro": "^9.4.1"
     }
 }

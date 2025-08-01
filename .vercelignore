@@ -1,7 +1,0 @@
-# .vercelignore
-# This file tells Vercel to ignore certain files and directories
-# when deploying.
-
-# Exclude files that are not needed in the production build
-**/.git
-**/.idea

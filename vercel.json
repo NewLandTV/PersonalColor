@@ -4,13 +4,7 @@
         "api/**/*.js": {
             "runtime": "@vercel/node",
             "memory": 1024,
-            "maxDuration": 60,
-            "includeFiles": [
-                "node_modules/face-api.js/**",
-                "node_modules/canvas/**",
-                "node_modules/@tensorflow/tfjs-backend-wasm/dist/*.wasm",
-                "node_modules/@tensorflow/tfjs-core/**"
-            ]
+            "maxDuration": 60
         }
     },
     "builds": {

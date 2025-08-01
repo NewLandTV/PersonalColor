@@ -1,36 +1,38 @@
 const { json, send } = require("micro");
-const { detectFaceAndLandmarks } = require("./personal_color_analysis/detect_face");
-const { extractCheekColor } = require("./personal_color_analysis/color_extract");
-const { analyzeTone } = require("./personal_color_analysis/tone_analysis");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function processImage(imageDataB64) {    
-    const imageBuffer = Buffer.from(imageDataB64, "base64");
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+        
+        // Base64 이미지를 이미지 파트로 변환
+        const imagePart = {
+            inlineData: {
+                data: imageDataB64.split(",")[1], // "data:image/jpeg;base64," 제거
+                mimeType: imageDataB64.split(",")[0].split(":")[1].split(";")[0] // mimeType 추출
+            }
+        };
+        
+        // Gemini에게 요청할 프롬프트
+        const prompt = "Analyze the skin tone and undertone from the person's face in this image. Is the person warm tone or cool tone? Explain why.";
 
-    console.log(`Received image buffer of size: ${imageBuffer.length} bytes`);
+        const result = await model.generateContent([prompt, imagePart]);
+        const response = await result.response;
+        const text = response.text();
 
-    // 얼굴 및 랜드마크 감지
-    const detectionResult = await detectFaceAndLandmarks(imageBuffer);
-    if (!detectionResult || !detectionResult.detections) {
-        return { status: "error", message: "No face detected or an error occurred." };
+        return {
+            status: "success",
+            diagnosis: text
+        }
+    } catch (error) {
+        console.error("Gemini API Error:", error);
+        return {
+            status: "error",
+            message: "An error occurred with the Gemini API."
+        };
     }
-    
-    const { image, detections } = detectionResult;
-    
-    // 뺨 색상 추출
-    const cheekColor = extractCheekColor(image, detections.landmarks);
-    if (!cheekColor) {
-        return { status: "error", message: "Could not extract cheek color." };
-    }
-    
-    // 톤 분석 및 진단
-    const result = analyzeTone(cheekColor);
-    
-    const dummyResult = {
-        status: "success",
-        ... result
-    };
-
-    return dummyResult;
 }
 
 module.exports = async (request, response) => {
