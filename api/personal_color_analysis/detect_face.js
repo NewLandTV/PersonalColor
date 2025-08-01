@@ -17,9 +17,8 @@ async function detectFaceAndLandmarks(imageBuffer) {
     try {
         const image = await loadImage(imageBuffer);
 
-        // 경량화 모델을 사용
-        const options = new faceapi.SsdMobilenetv1Options();
-        const detections = await faceapi.detectSingleFace(image, options).withFaceLandmarks(true);
+        // 얼굴 감지 후 랜드마크 추출
+        const detections = await faceapi.detectSingleFace(image).withFaceLandmarks(true);
 
         if (!detections) {
              return null;
