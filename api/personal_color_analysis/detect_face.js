@@ -1,6 +1,12 @@
 const faceapi = require("face-api.js");
-const { loadImage } = require("canvas");
+const { createCanvas, Image, loadImage } = require("canvas");
 const path = require("path");
+
+// face-api.js가 Node.js 환경에서 canvas를 사용하도록 설정
+faceapi.env.monkeyPatch({
+    createCanvas,
+    Image
+});
 
 // 모델 파일 경로
 const MODEL_URL = path.join(__dirname, "models");
@@ -21,7 +27,8 @@ async function detectFaceAndLandmarks(imageBuffer) {
         const detections = await faceapi.detectSingleFace(image).withFaceLandmarks(true);
 
         if (!detections) {
-             return null;
+            console.log("No face detected.");
+            return null;
         }
         
         return { image, detections };
