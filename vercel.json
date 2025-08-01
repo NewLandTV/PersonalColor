@@ -2,8 +2,11 @@
     "version": 2,
     "builds": [
         {
-            "src": "Dockerfile",
-            "use": "@vercel/docker"
+            "src": "app.py",
+            "use": "@vercel/python",
+            "config": {
+                "runtime": "python3.12"
+            }
         }
     ],
     "routes": [
@@ -11,5 +14,6 @@
             "src": "/(.*)",
             "dest": "app.py"
         }
-    ]
+    ],
+    "installCommand": "apt-get update && apt-get install -y cmake g++ libboost-all-dev && pip install --no-cache-dir -r requirements.txt"
 }
