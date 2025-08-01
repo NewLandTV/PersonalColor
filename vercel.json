@@ -3,10 +3,7 @@
     "builds": [
         {
             "src": "app.py",
-            "use": "@vercel/python",
-            "config": {
-                "runtime": "python3.12"
-            }
+            "use": "@vercel/python"
         }
     ],
     "routes": [
@@ -15,5 +12,5 @@
             "dest": "app.py"
         }
     ],
-    "installCommand": "apt-get update && apt-get install -y cmake build-essential libboost-all-dev && python3 -m pip install --no-cache-dir -r requirements.txt"
+    "installCommand": "apt-get update && apt-get install -y cmake build-essential libboost-all-dev && python3 -m pip install --upgrade pip && python3 -m pip install --no-cache-dir -r requirements.txt"
 }
