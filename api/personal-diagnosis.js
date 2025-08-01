@@ -3,17 +3,24 @@ const { loadModels, detectFaceAndLandmarks } = require("./personal_color_analysi
 const { extractCheekColor } = require("./personal_color_analysis/color_extract");
 const { analyzeTone } = require("./personal_color_analysis/tone_analysis");
 
-// 모델을 미리 로드하여 콜드 스타트 시간을 단축합니다.
-let modelsLoaded = false;
-async function initializeModels() {
-    if (!modelsLoaded) {
-        await loadModels();
-        modelsLoaded = true;
-    }
-}
-initializeModels();
+// 모델 로딩 상태를 관리하는 변수
+let modelsAreLoaded = false;
+
+// 모델을 미리 로드하여 콜드 스타트 시간을 단축합니다. (모델 로딩 Promise)
+let modelsPromise = loadModels().then(() => {
+    modelsAreLoaded = true;
+    console.log("All models loaded and ready for use.");
+}).catch(err => {
+    console.error("Failed to load models:", err);
+});
 
 async function processImage(imageDataB64) {
+    // 모델 로딩이 완료될 때까지 기다립니다.
+    if (!modelsAreLoaded) {
+        console.log("Waiting for models to load...");
+        await modelsPromise;
+    }
+    
     const imageBuffer = Buffer.from(imageDataB64, "base64");
 
     console.log(`Received image buffer of size: ${imageBuffer.length} bytes`);
