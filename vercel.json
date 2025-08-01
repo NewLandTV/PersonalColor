@@ -17,5 +17,6 @@
         "env": {
             "NODE_PATH": "node_modules"
         }
-    }
+    },
+    "installCommand": "npm install"
 }
