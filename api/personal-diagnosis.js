@@ -1,18 +1,44 @@
 const { json, send } = require("micro");
+const { loadModels, detectFaceAndLandmarks } = require("./personal_color_analysis/detect_face");
+const { extractCheekColor } = require("./personal_color_analysis/color_extract");
+const { analyzeTone } = require("./personal_color_analysis/tone_analysis");
 
-const processImage = async (imageDataB64) => {
+// 모델을 미리 로드하여 콜드 스타트 시간을 단축합니다.
+let modelsLoaded = false;
+async function initializeModels() {
+    if (!modelsLoaded) {
+        await loadModels();
+        modelsLoaded = true;
+    }
+}
+initializeModels();
+
+async function processImage(imageDataB64) {
     const imageBuffer = Buffer.from(imageDataB64, "base64");
 
-    // TODO: JS 기반 퍼스널 컬러 분석 및 진단
-  
     console.log(`Received image buffer of size: ${imageBuffer.length} bytes`);
 
+    // 얼굴 및 랜드마크 감지
+    const detectionResult = await detectFaceAndLandmarks(imageBuffer);
+    if (!detectionResult || !detectionResult.detections) {
+        return { status: "error", message: "No face detected or an error occurred." };
+    }
+    
+    const { image, detections } = detectionResult;
+    
+    // 뺨 색상 추출
+    const cheekColor = extractCheekColor(image, detections.landmarks);
+    if (!cheekColor) {
+        return { status: "error", message: "Could not extract cheek color." };
+    }
+    
+    // 톤 분석 및 진단
+    const result = analyzeTone(cheekColor);
+    
     const dummyResult = {
         status: "success",
-        diagnosis: "봄웜톤(spring)",
-        confidence: 0.9,
-        recommendations: ["노란색 계열 옷 추천", "따뜻한 계열의 액세서리 추천"]
-    }
+        ... result
+    };
 
     return dummyResult;
 }
