@@ -1,11 +1,13 @@
 const faceapi = require("face-api.js");
-const { createCanvas, Image, loadImage } = require("canvas");
+const { createCanvas, Image, ImageData, Canvas, loadImage, DOMImage } = require("canvas");
 const path = require("path");
 
 // face-api.js가 Node.js 환경에서 canvas를 사용하도록 설정
 faceapi.env.monkeyPatch({
+    Canvas,
+    Image: DOMImage || Image,
     createCanvas,
-    Image
+    createImage: () => new Image()
 });
 
 // 모델 파일 경로
