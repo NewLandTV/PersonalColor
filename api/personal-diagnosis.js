@@ -5,7 +5,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function processImage(imageDataB64) {    
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         if (!imageDataB64 || typeof imageDataB64 !== "string") {
             throw new Error("Invalid image data format.");
