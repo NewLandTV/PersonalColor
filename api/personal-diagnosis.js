@@ -8,7 +8,7 @@ async function processImage(imageDataB64) {
         const model = genAI.getGenerativeModel({
             model: "gemini-2.5-flash",
             generationConfig: {
-                maxOutputTokens: 200,
+                maxOutputTokens: 500,
             }
         });
 
@@ -34,14 +34,13 @@ async function processImage(imageDataB64) {
         };
         
         // Gemini에게 요청할 프롬프트
-        const prompt = `Analyze the person's face in the image to determine their personal color.
-                        Provide a concise, single-line response for each point below.
-                        1. Skin Tone:
-                        2. Undertone (Warm/Cool):
-                        3. Season (e.g., Spring, Summer, Autumn, Winter):
-                        4. Recommended Color Palette:
-                        5. Accuracy of this analysis (as a percentage): 
-                        6. Brief explanation for the analysis:`;
+        const prompt = `Analyze the person's face in the image to determine their personal color. Provide a concise, single-line response for each point below.
+1. 피부 톤:
+2. 언더톤 (웜/쿨):
+3. 계절 (예: 봄, 여름, 가을, 겨울):
+4. 추천 색상 팔레트:
+5. 분석 정확도 (백분율로): 
+6. 분석 요약 (간단하게):`;
 
         const result = await model.generateContent([prompt, imagePart]);
         const response = await result.response;
