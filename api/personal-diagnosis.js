@@ -3,7 +3,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-async function processImage(imageDataB64) {    
+async function processImage(imageDataB64) {
     try {
         const model = genAI.getGenerativeModel({
             model: "gemini-2.5-flash",
@@ -17,7 +17,7 @@ async function processImage(imageDataB64) {
         }
 
         let base64Data = imageDataB64;
-        let mimeType = "image/jpeg"; // Default
+        let mimeType = "image/jpeg";    // Default
 
         // 'data:image/jpeg;base64,' 접두사가 있는지 확인하고 처리
         if (imageDataB64.startsWith("data:")) {
@@ -35,20 +35,20 @@ async function processImage(imageDataB64) {
         
         // Gemini에게 요청할 프롬프트
         const prompt = `사진 속 인물의 얼굴을 분석하여 퍼스널 컬러를 진단해주세요.
-- 만약 사진에 인물의 얼굴이 있으면, 다음 JSON 형식으로 응답하세요:
-{
-    "status": "success",
-    "diagnosis": "계절(예: 봄, 여름, 가을, 겨울) 그리고 (웜 또는 쿨)"
-    "confidence": "분석 정확도 (백분율)",
-    "recommendations": ["(추천 항목)", "(추천 항목)", "(추천 항목)"],
-    "message": "분석 완료"
-}
-- 만약 사진에 인물의 얼굴이 없으면, 다음 JSON 형식으로 응답하세요:
-{
-    "status": "error",
-    "message": "사진에서 얼굴을 찾을 수 없습니다."
-}
-반드시 JSON 객체만 반환하고, 다른 텍스트는 포함하지 마세요.`;
+            - 만약 사진에 인물의 얼굴이 있으면, 다음 JSON 형식으로 응답하세요:
+            {
+                "status": "success",
+                "diagnosis": "계절(예: 봄, 여름, 가을, 겨울) 그리고 (웜 또는 쿨)"
+                "confidence": "분석 정확도 (백분율)",
+                "recommendations": ["(추천 항목)", "(추천 항목)", "(추천 항목)"],
+                "message": "분석 완료"
+            }
+            - 만약 사진에 인물의 얼굴이 없으면, 다음 JSON 형식으로 응답하세요:
+            {
+                "status": "error",
+                "message": "사진에서 얼굴을 찾을 수 없습니다."
+            }
+            반드시 JSON 객체만 반환하고, 다른 텍스트는 포함하지 마세요.`;
 
         const result = await model.generateContent([prompt, imagePart]);
         const response = await result.response;
@@ -92,7 +92,7 @@ module.exports = async (request, response) => {
         console.error("Server internal error:", error);
         return response.status(500).json({ 
             status: "error",
-            message: "Server internal error: " + error.message
+            message: `Server internal error: ${error.message}`
         });
     }
 };
